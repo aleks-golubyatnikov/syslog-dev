@@ -2,16 +2,26 @@
   become: yes
   gather_facts: no
   tasks:
-    - name: Install rsyslog
+    - name: Install Rsyslog
       apt:
         name: rsyslog
         state: present
         update_cache: true
     
-    - name: Install logrotate
+    - name: Install Logrotate
       apt:
         name: logrotate
         state: present
         update_cache: true
+
+    - name: Update Rsyslog configuration
+      lineinfile:
+        dest: /etc/rsyslog.conf
+        line: "$template RemInputLogs, \"/var/log/remotelogs/%FROMHOST-IP%/%PROGRAMNAME%.log\" "
+        
+    - name: Restart Rsyslog
+      service:
+        name: rsyslog
+        state: restarted   
 
         
