@@ -1,0 +1,6 @@
+[syslog-dev]
+syslog-server ansible_host=192.168.0.40
+
+[all:vars]
+ansible_connection=ssh
+ansible_user=golubyatnikov
