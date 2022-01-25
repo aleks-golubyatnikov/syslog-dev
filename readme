@@ -1,59 +1,41 @@
-1. Server requirements:
- - Docker, Docker Compose installed;
- - Ansible;
+Requirements:
+  - Docker Engine (https://docs.docker.com/engine/install/ubuntu/);
+  - Docker Compose (https://docs.docker.com/compose/install/);
+
+1. Docker:
+#build image
+cd ./docker-syslog/rsyslog/ && docker build --build-arg PATH_LOGS_INSIDE=/var/log/agentlogs/ -t dev-syslog .
+
+#run container
+docker run --restart always -d --cap-add SYSLOG --privileged -v /var/logs:/var/log -p 514:514 -p 514:514/udp --name rsyslog dev-syslog
+
+#send test syslog message
+logger -n 192.168.0.40 -t dev-app -p user.notice "Testing syslog server - some text..."
+docker run --log-driver syslog --log-opt syslog-address=tcp://192.168.0.40 alpine echo $(uname -a)
+
+#how the message was processed (on host server)
+ls -la /var/logs/agentlogs/
+
+#running processes
+docker ps
+
+#docker containers list
+docker containers ls --all
+
+#docker image list
+docker image ls --all
+
+#remove container (if nessesary)
+docker container rm <container_name>
+
+#remove image (if nessesary)
+docker image rm -f <image_name>
 
 
 
-2. Installation:
-2.1 Ansible:
+2. Docker Compose:
+
+
+3. Ansible
+#install
 run ./install-syslog.sh (must be rights to execute, ex.: chmod u+x ./install-syslog.sh);
-
-2.2 Docker:
-
-
-2.2.1 Build image:
-cd ./syslog/syslog-dev/docker-syslog/rsyslog
-#docker build -t dev-syslog .
-docker build --build-arg PATH_LOGS_INSIDE=/var/logs/agentlogs/ -t env-app .
-
-2.2.2 Run container:
-#docker run  --cap-add SYSLOG --restart always --privileged -v /var/logs:/var/log -p 514:514 -p 514:514/udp --name rsyslog dev-syslog 
-docker run  --rm -d --cap-add SYSLOG --privileged -v /var/logs:/var/log -p 514:514 -p 514:514/udp --name rsyslog dev-syslog 
-
-where -v /var/log:/var/log - volumes, local and remote (in container), -p 514:514 - ports mappings;
-
-
-
-3. Health status Rsyslog:
-run in console:
-systemctl status rsyslog (must be in 'running' state);
-
-4. How to check the Rsyslog server operation:
-4.1 run in console:
-docker run --log-driver syslog --log-opt syslog-address=tcp://{IP_ADDRES}:{TCP:PORT} alpine echo $(uname -a)
-where {IP_ADDRES} - Rsyslog server address, {TCP:PORT} - port on which requests are listened to;
-
-4.2 сheck for files in the directory '/var/log/agentlogs/{IP}'
-where {IP} - address from which the message was sent;
-
-
-
-5. Remove Rsyslog, Logrotate
-run in console:
-apt-get remove --purge rsyslog -y && apt-get remove --purge logrotate -y
-
-
-6. Docker operations:
-6.1 Containers list:
-docker container ls -all;
-
-6.2 Container remove:
-docker container rm {NAME};
-where {NAME}  - name received in the previous;
-
-6.3 Image list
-docker image ls
-
-6.4 Image remove:
-docker image rm -f {NAME};
-where {NAME}  - name received in the previous;
