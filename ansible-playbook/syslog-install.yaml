@@ -28,9 +28,9 @@
         - '*.* ?AgentLogs'
       notify: Restart rsyslog
 
-      handlers:
-      - name: Restart rsyslog
-        service: 
-          name: rsyslog
-          state: restarted
+  handlers:
+  - name: Restart rsyslog
+    service: 
+      name: rsyslog
+      state: restarted
 
