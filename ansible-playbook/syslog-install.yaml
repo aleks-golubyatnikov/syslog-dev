@@ -1,12 +1,14 @@
-- hosts: syslog-dev
+- hosts: dev
   become: yes
+  gather_facts: no
   tasks:
-    - name: install rsyslog
+    - name: Install rsyslog
       apt:
         name: rsyslog
         state: present
         update_cache: true
-    - name: install logrotate
+    
+    - name: Install logrotate
       apt:
         name: logrotate
         state: present
