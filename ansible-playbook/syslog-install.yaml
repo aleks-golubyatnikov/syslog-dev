@@ -8,12 +8,17 @@
         state: present
         update_cache: true
 
+    - name: Enable Rsyslog
+      service:
+        name: rsyslog
+        enabled: yes    
+
     - name: Logrotate installation
       apt:
         name: logrotate
         state: present
         update_cache: true
-    
+
     - name: Rsyslog application settings
       lineinfile:
         dest: /etc/rsyslog.conf
@@ -25,7 +30,14 @@
         - '$ModLoad imtcp' #TCP enable
         - '$InputTCPServerRun 514' 
         - '$template AgentLogs, "/var/log/agentlogs/%FROMHOST-IP%/%PROGRAMNAME%.log"'
-        - '*.* ?AgentLogs'
+      notify: Restart rsyslog
+
+    - name: Rsyslog settings [temlates]
+      lineinfile:
+        dest: /etc/rsyslog.conf
+        line: "{{ item }}"
+      with_items:
+        - '*.* ?AgentLogs' #Template
       notify: Restart rsyslog
 
   handlers:
