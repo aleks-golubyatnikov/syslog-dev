@@ -2,35 +2,35 @@
   become: yes
   gather_facts: no
   tasks:
-    - name: Install Rsyslog
+    - name: Rsyslog installation
       apt:
         name: rsyslog
         state: present
         update_cache: true
-    
-    - name: Install Logrotate
+
+    - name: Logrotate installation
       apt:
         name: logrotate
         state: present
         update_cache: true
-
-    - name: Update Rsyslog configuration
+    
+    - name: Rsyslog application settings
       lineinfile:
         dest: /etc/rsyslog.conf
+        regexp: '^#?\s*{{ item }}\s'
         line: "{{ item }}"
       with_items:
-        - '$ModLoad imudp \n' #UDP enable
-        - '$UDPServerRun 514 \n' 
-        - '$ModLoad imtcp \n' #TCP enable
-        - '$TCPServerRun 514 \n' 
-        - '$template AgentLogs, "/var/log/agentlogs/%FROMHOST-IP%/%PROGRAMNAME%.log" \n'
-        - '*.* ?AgentLogs \n'
+        - '$ModLoad imudp' #UDP enable
+        - '$UDPServerRun 514' 
+        - '$ModLoad imtcp' #TCP enable
+        - '$InputTCPServerRun 514' 
+        - '$template AgentLogs, "/var/log/agentlogs/%FROMHOST-IP%/%PROGRAMNAME%.log"'
+        - '*.* ?AgentLogs'
+      notify: Restart rsyslog
 
-    - name: Restart Rsyslog
-      service:
-        name: rsyslog
-        state: restarted   
+      handlers:
+      - name: Restart rsyslog
+        service: 
+          name: rsyslog
+          state: restarted
 
-
-
-        
