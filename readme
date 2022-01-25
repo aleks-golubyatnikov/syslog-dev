@@ -1,5 +1,7 @@
 1. Server requirements:
  - Docker, Docker Compose installed;
+ - Ansible;
+
 
 
 2. Installation:
@@ -9,19 +11,46 @@ run ./install-syslog.sh (must be rights to execute, ex.: chmod u+x ./install-sys
 2.2 Docker:
 
 
+2.2.1 Build image:
+cd ./syslog/syslog-dev/docker-syslog/rsyslog
+docker build -t dev-syslog .
+
+2.2.2 Run container:
+docker run  --cap-add SYSLOG --restart always --privileged -v /var/log:/var/log -p 514:514 -p 514:514/udp --name rsyslog dev-syslog
+where -v /var/log:/var/log - volumes, local and remote (in container), -p 514:514 - ports mappings;
+
+
+
 3. Health status Rsyslog:
 run in console:
 systemctl status rsyslog (must be in 'running' state);
 
-3. How to check the Rsyslog server operation:
-
-3.1 run in console:
+4. How to check the Rsyslog server operation:
+4.1 run in console:
 docker run --log-driver syslog --log-opt syslog-address=tcp://{IP_ADDRES}:{TCP:PORT} alpine echo $(uname -a)
 where {IP_ADDRES} - Rsyslog server address, {TCP:PORT} - port on which requests are listened to;
 
-3.2 сheck for files in the directory '/var/log/agentlogs/{IP}'
+4.2 сheck for files in the directory '/var/log/agentlogs/{IP}'
 where {IP} - address from which the message was sent;
 
-4. Remove Rsyslog, Logrotate
+
+
+5. Remove Rsyslog, Logrotate
 run in console:
 apt-get remove --purge rsyslog -y && apt-get remove --purge logrotate -y
+
+
+6. Docker operations:
+6.1 Containers list:
+docker container ls -all;
+
+6.2 Container remove:
+docker container rm {NAME};
+where {NAME}  - name received in the previous;
+
+6.3 Image list
+docker image ls
+
+6.4 Image remove:
+docker image rm -f {NAME};
+where {NAME}  - name received in the previous;
