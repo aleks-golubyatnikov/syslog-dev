@@ -34,7 +34,14 @@ docker image rm -f <image_name>
 
 
 2. Docker Compose:
+#build
+docker-compose build --build-arg PATH_LOGS_INSIDE=/var/log/agentlogs/
 
+#run
+docker-compose up -d
+
+#stop
+docker-compose stop
 
 3. Ansible
 #install

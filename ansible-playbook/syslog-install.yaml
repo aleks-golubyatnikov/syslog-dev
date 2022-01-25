@@ -38,6 +38,7 @@
         line: "{{ item }}"
       with_items:
         - '*.* ?AgentLogs' #Template
+        - '&~ '
       notify: Restart rsyslog
 
   handlers:
