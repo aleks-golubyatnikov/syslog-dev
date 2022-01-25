@@ -13,10 +13,13 @@ run ./install-syslog.sh (must be rights to execute, ex.: chmod u+x ./install-sys
 
 2.2.1 Build image:
 cd ./syslog/syslog-dev/docker-syslog/rsyslog
-docker build -t dev-syslog .
+#docker build -t dev-syslog .
+docker build --build-arg PATH_LOGS_INSIDE=/var/logs/agentlogs/ -t env-app .
 
 2.2.2 Run container:
-docker run  --cap-add SYSLOG --restart always --privileged -v /var/log:/var/log -p 514:514 -p 514:514/udp --name rsyslog dev-syslog
+#docker run  --cap-add SYSLOG --restart always --privileged -v /var/logs:/var/log -p 514:514 -p 514:514/udp --name rsyslog dev-syslog 
+docker run  --rm -d --cap-add SYSLOG --privileged -v /var/logs:/var/log -p 514:514 -p 514:514/udp --name rsyslog dev-syslog 
+
 where -v /var/log:/var/log - volumes, local and remote (in container), -p 514:514 - ports mappings;
 
 
