@@ -17,11 +17,20 @@
     - name: Update Rsyslog configuration
       lineinfile:
         dest: /etc/rsyslog.conf
-        line: "$template RemInputLogs, \"/var/log/remotelogs/%FROMHOST-IP%/%PROGRAMNAME%.log\" "
-        
+        line: "{{ item }}"
+      with_items:
+        - '$ModLoad imudp \n' #UDP enable
+        - '$UDPServerRun 514 \n' 
+        - '$ModLoad imtcp \n' #TCP enable
+        - '$TCPServerRun 514 \n' 
+        - '$template AgentLogs, "/var/log/agentlogs/%FROMHOST-IP%/%PROGRAMNAME%.log" \n'
+        - '*.* ?AgentLogs \n'
+
     - name: Restart Rsyslog
       service:
         name: rsyslog
         state: restarted   
+
+
 
         
