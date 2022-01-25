@@ -9,7 +9,7 @@ RUN echo '$InputTCPServerRun 514' >> /etc/rsyslog.conf
 RUN echo '$template AgentLogs, "/var/log/agentlogs/%FROMHOST-IP%/%PROGRAMNAME%.log"' >> /etc/rsyslog.conf
 RUN echo '*.* ?AgentLogs' >> /etc/rsyslog.conf
 
-RUN echo '$PrivDropToUser golubyatnikov' >> /etc/rsyslog.conf
-RUN echo '$PrivDropToGroup golubyatnikov' >> /etc/rsyslog.conf
+RUN echo '$PrivDropToUser syslog' >> /etc/rsyslog.conf
+RUN echo '$PrivDropToGroup syslog' >> /etc/rsyslog.conf
 
 ENTRYPOINT ["rsyslogd", "-n"]
