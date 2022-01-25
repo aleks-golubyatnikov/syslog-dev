@@ -1,13 +1,12 @@
 FROM ubuntu:latest
 
-RUN apt update && apt install rsyslog -y
+RUN apt-get update && apt-get install -y rsyslog logrotate
 
-RUN echo '$ModLoad imudp \n\
-$UDPServerRun 514 \n\
-$ModLoad imtcp \n\
-$InputTCPServerRun 514 \n\
-$template RemoteStore, "/var/log/remote/%$year%/%$Month%/%$Day%/%$Hour%.log" \n\
-:source, !isequal, "localhost" -?RemoteStore \n\
-:source, isequal, "last" ~ ' > /etc/rsyslog.conf
+RUN echo '$ModLoad imudp' > /etc/rsyslog.conf
+RUN echo '$UDPServerRun 514' > /etc/rsyslog.conf
+RUN echo '$ModLoad imtcp' > /etc/rsyslog.conf
+RUN echo '$InputTCPServerRun 514' > /etc/rsyslog.conf
+RUN echo '$template AgentLogs, "/var/log/agentlogs/%FROMHOST-IP%/%PROGRAMNAME%.log"' > /etc/rsyslog.conf
+RUN echo '*.* ?AgentLogs' > /etc/rsyslog.conf
 
 ENTRYPOINT ["rsyslogd", "-n"]

@@ -1,0 +1,27 @@
+1. Server requirements:
+ - Docker, Docker Compose installed;
+
+
+2. Installation:
+2.1 Ansible:
+run ./install-syslog.sh (must be rights to execute, ex.: chmod u+x ./install-syslog.sh);
+
+2.2 Docker:
+
+
+3. Health status Rsyslog:
+run in console:
+systemctl status rsyslog (must be in 'running' state);
+
+3. How to check the Rsyslog server operation:
+
+3.1 run in console:
+docker run --log-driver syslog --log-opt syslog-address=tcp://{IP_ADDRES}:{TCP:PORT} alpine echo $(uname -a)
+where {IP_ADDRES} - Rsyslog server address, {TCP:PORT} - port on which requests are listened to;
+
+3.2 сheck for files in the directory '/var/log/agentlogs/{IP}'
+where {IP} - address from which the message was sent;
+
+4. Remove Rsyslog, Logrotate
+run in console:
+apt-get remove --purge rsyslog -y && apt-get remove --purge logrotate -y
