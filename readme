@@ -31,6 +31,8 @@ docker container rm <container_name>
 #remove image (if nessesary)
 docker image rm -f <image_name>
 
+#view status
+docker ps -f name=rsyslog
 
 
 2. Docker Compose:
